@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>球探 · 体育赛事数据与观察</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background-color: #f2f4f6;
+            color: #1e2a3a;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* 主视觉 */
+        .hero {
+            background: linear-gradient(145deg, #ffffff, #f9fafb);
+            border-radius: 28px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03), 0 2px 6px rgba(0, 0, 0, 0.02);
+            padding: 3rem 2.5rem;
+            margin-bottom: 2.5rem;
+            border: 1px solid #e9edf0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.6rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            color: #0f1c2b;
+        }
+
+        .hero .subhead {
+            font-size: 1.1rem;
+            color: #4a5b6e;
+            max-width: 680px;
+            margin: 0 auto 1.8rem;
+        }
+
+        .hero .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #eaeef3;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            color: #2a3b4c;
+            border: 1px solid #dce2e8;
+        }
+
+        /* 通用卡片 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2.8rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 1.8rem 1.6rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.02);
+            border: 1px solid #eef2f5;
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+            border-color: #d8e0e8;
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.6rem;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: #2f4052;
+        }
+
+        /* 宽卡片（适合人群+链接段落） */
+        .wide-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 1.8rem 2.2rem 2.2rem;
+            border: 1px solid #eef2f5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            margin-bottom: 2rem;
+        }
+
+        .wide-card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+            border-left: 4px solid #9aaec3;
+            padding-left: 1rem;
+            color: #0f1c2b;
+        }
+
+        .people-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1rem;
+            margin: 0.8rem 0 0.2rem;
+        }
+
+        .people-tags span {
+            background: #eef3f8;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            color: #1f3143;
+            border: 1px solid #dde4eb;
+        }
+
+        .link-paragraph {
+            font-size: 1rem;
+            background: #f8fafc;
+            padding: 1.2rem 1.6rem;
+            border-radius: 16px;
+            border: 1px solid #e6ecf2;
+            margin: 1rem 0 0;
+        }
+
+        .link-paragraph a {
+            color: #1a5c8a;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid #bbd4e9;
+            transition: border-color 0.15s, color 0.15s;
+        }
+
+        .link-paragraph a:hover {
+            color: #0b3b5e;
+            border-bottom-color: #1a5c8a;
+        }
+
+        .faq-mini {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: #f6f8fa;
+            padding: 1rem 1.2rem;
+            border-radius: 16px;
+            border: 1px solid #e9edf1;
+        }
+
+        .faq-item strong {
+            display: block;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #102433;
+            margin-bottom: 0.2rem;
+        }
+
+        .faq-item span {
+            font-size: 0.9rem;
+            color: #3b4f62;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.85rem;
+            color: #6a7f92;
+            border-top: 1px solid #e2e8ed;
+            padding-top: 2rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 680px) {
+            .hero {
+                padding: 2rem 1.2rem;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .wide-card {
+                padding: 1.4rem 1.2rem;
+            }
+            .faq-mini {
+                grid-template-columns: 1fr;
+            }
+            .link-paragraph {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- 主视觉 hero -->
+    <div class="hero">
+        <h1>⚡ 赛事观察 · 球探</h1>
+        <p class="subhead">
+            从联赛数据到临场情报，<a href="https://sport-qt.com" style="color:#1a5c8a; text-decoration: none; border-bottom: 1px solid #bbd4e9;">球探</a> 为体育爱好者提供结构化的赛事信息与趋势参考。
+        </p>
+        <div class="stat-badge">
+            <span>📊 覆盖 40+ 联赛 · 实时数据流</span>
+        </div>
+    </div>
+
+    <!-- 用途卡片 三列 -->
+    <div class="card-grid">
+        <div class="card">
+            <span class="card-icon">📋</span>
+            <h3>赛程与阵容</h3>
+            <p>每轮赛事前更新对阵、预计首发及伤病动态，辅助理解赛前部署与轮换逻辑。</p>
+        </div>
+        <div class="card">
+            <span class="card-icon">📈</span>
+            <h3>数据趋势</h3>
+            <p>控球率、射门转化、防守强度等关键指标以可视化方式呈现，便于横向对比球队状态。</p>
+        </div>
+        <div class="card">
+            <span class="card-icon">🔍</span>
+            <h3>情报聚合</h3>
+            <p>汇集多家媒体与机构的消息摘要，减少信息碎片，帮助快速把握比赛背景。</p>
+        </div>
+    </div>
+
+    <!-- 适合人群 + 自然链接段落 -->
+    <div class="wide-card">
+        <h2>适合哪些体育观察者？</h2>
+        <div class="people-tags">
+            <span>⚽ 足球数据分析师</span>
+            <span>🏀 篮球爱好者</span>
+            <span>📰 体育编辑</span>
+            <span>📊 赛事研究者</span>
+            <span>🧑‍💼 竞彩玩家</span>
+            <span>🎯 战术迷</span>
+        </div>
+        <p style="margin-top: 1rem; color: #2c4054;">
+            无论你是专注五大联赛的资深球迷，还是刚刚开始用数据理解比赛的入门者，都可以在 <a href="https://sport-qt.com">球探</a> 找到符合自己节奏的信息层。
+            平台不提供“必胜预测”，而是呈现客观赛前情报与统计数据，让每个人独立做出判断。
+        </p>
+
+        <!-- 自然链接段落（嵌入句子） -->
+        <div class="link-paragraph">
+            <p>📌 例如，在欧冠周中，你可以通过 <a href="https://sport-qt.com">球探</a> 快速浏览各小组的积分形势、近五场走势以及关键球员的出场概率。这些内容本身不构成建议，而是作为决策背景存在。</p>
+        </div>
+    </div>
+
+    <!-- FAQ 摘要 + 提示 -->
+    <div class="faq-mini">
+        <div class="faq-item">
+            <strong>❓ 球探的数据来源是什么？</strong>
+            <span>主要整合公开赛事数据与多家体育媒体报告，经结构化处理后呈现。</span>
+        </div>
+        <div class="faq-item">
+            <strong>❓ 是否包含实时比分？</strong>
+            <span>部分重点联赛提供接近实时的数据更新，具体以页面标注为准。</span>
+        </div>
+        <div class="faq-item">
+            <strong>💡 提示</strong>
+            <span>将情报与个人经验结合使用，能更立体地理解比赛进程。</span>
+        </div>
+        <div class="faq-item">
+            <strong>📌 使用场景</strong>
+            <span>赛前 24 小时及比赛日早晨为信息密集时段，推荐此时查阅。</span>
+        </div>
+    </div>
+
+    <!-- 结尾 -->
+    <div class="footer-note">
+        <p>基于公开信息与结构化数据 · 仅供个人学习与参考</p>
+    </div>
+
+</div>
+</body>
+</html>
